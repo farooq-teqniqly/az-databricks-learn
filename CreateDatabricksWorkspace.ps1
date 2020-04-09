@@ -48,9 +48,15 @@ $deploymentParametersFileName = [System.IO.Path]::GetFileNameWithoutExtension($M
     workspaceName = @{ value = $ResourceGroupName + "-dbrixws"}
 } | ConvertTo-Json >> $deploymentParametersFileName
 
-az group deployment create `
+try 
+{
+    az group deployment create `
     --resource-group $ResourceGroupName `
     --template-uri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/101-databricks-workspace/azuredeploy.json `
     --parameters "@$($deploymentParametersFileName)"
+}
+finally 
+{  
+    Remove-Item -Path $deploymentParametersFileName -Force
+}
 
-Remove-Item -Path $deploymentParametersFileName -Force

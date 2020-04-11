@@ -1,10 +1,43 @@
-﻿param(
+<#
+    .Synopsis
+    Creates or deletes an Azure Databricks Workspace.
+
+    .Description
+    Creates or deletes an Azure Databricks Workspace.
+
+    Specify the -Cleanup switch to remove the Azure Databricks workspace.
+
+    .Parameter Cleanup
+    When specified, removes the Azure Databricks workspace.
+
+    .Parameter ResourceGroupName
+    The Azure resource group name.
+
+    .Parameter ResourceGroupLocation
+    The Azure resource group location.
+
+    .Parameter WorkspaceName
+    The Azure Databricks workspace name.
+
+    .Parameter PricingTier
+    The Azure Databricks tier. Defaults to "Standard".
+
+    .Example
+    Create an  Azure Databricks workspace:
+
+    .\Databricks.ps1 -ResourceGroupName dbrix-test-rg `
+        -ResourceGroupLocation westus2 `
+        -WorkspaceName dbrixtestws
+
+    .Example
+    Remove the resource group created in the first example:
+
+    .\Databricks.ps1 -Cleanup `
+        -ResourceGroupName dbrix-test-rg `
+#>
+param(
       [Parameter(Mandatory=$false, ParameterSetName="cleanup")]
       [switch] $Cleanup,
-
-      [Parameter(Mandatory=$true, ParameterSetName="create")]
-      [Parameter(Mandatory=$true, ParameterSetName="cleanup")]
-      [string] $SubscriptionName,
 
       [Parameter(Mandatory=$true, ParameterSetName="create")]
       [Parameter(Mandatory=$true, ParameterSetName="cleanup")]
@@ -13,16 +46,13 @@
       [Parameter(Mandatory=$true, ParameterSetName="create")]
       [string] $ResourceGroupLocation,
 
+      [Parameter(Mandatory=$true, ParameterSetName="create")]
+      [string] $WorkspaceName,
+      
       [Parameter(Mandatory=$false, ParameterSetName="create")]
-      [ValidateSet("Standard", "Premium")]
-      [string] $PricingTier = "Standard"
+      [ValidateSet("standard", "premium")]
+      [string] $PricingTier = "standard"
 )
-
-Write-Host "Please login to Azure..."
-az login
-
-az account set --subscription $SubscriptionName
-Write-Host "Using subscription '$SubscriptionName'."
 
 if ($Cleanup)
 {
@@ -45,7 +75,7 @@ $deploymentParametersFileName = [System.IO.Path]::GetFileNameWithoutExtension($M
 @{
     pricingTier = @{ value = $PricingTier}
     location = @{ value = $ResourceGroupLocation}
-    workspaceName = @{ value = $ResourceGroupName + "-dbrixws"}
+    workspaceName = @{ value = $WorkspaceName}
 } | ConvertTo-Json >> $deploymentParametersFileName
 
 try 

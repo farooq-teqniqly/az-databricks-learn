@@ -11,7 +11,7 @@ function New-ResourceGroup {
         [string]$Location
     )
 
-    $commandString = CreateAzCommand `
+    $commandString = NewAzCommand `
         -Resource 'group' `
         -Verb 'create' `
         -Options @{
@@ -28,7 +28,7 @@ function New-ResourceGroup {
         location = $result[2];
     }
 
-    UpdateCache `
+    SetCacheItem `
         -Key $resourceGroup['name'] `
         -Item $resourceGroup `
         | Out-Null
@@ -46,7 +46,7 @@ function Remove-ResourceGroup {
         [string]$Name
     )
 
-    $commandString = CreateAzCommand `
+    $commandString = NewAzCommand `
         -Resource 'group' `
         -Verb 'delete' `
         -Options @{
@@ -71,14 +71,14 @@ function Get-ResourceGroup {
         [string]$Name
     )
 
-    $cachedResourceGroup = GetCachedItem `
+    $cachedResourceGroup = GetCacheItem `
         -Key $Name
 
     if ($null -ne $cachedResourceGroup) {
         return $cachedResourceGroup
     }
 
-    $commandString = CreateAzCommand `
+    $commandString = NewAzCommand `
         -Resource 'group' `
         -Verb 'show' `
         -Options @{

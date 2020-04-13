@@ -1,6 +1,6 @@
 [hashtable]$script:cache = @{}
 
-function UpdateCache {
+function SetCacheItem {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -22,7 +22,7 @@ function UpdateCache {
     return $script:cache[$Key]
 }
 
-function GetCachedItem {
+function GetCacheItem {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

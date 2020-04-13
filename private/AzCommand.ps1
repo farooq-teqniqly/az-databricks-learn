@@ -1,4 +1,4 @@
-function CreateAzCommand {
+function NewAzCommand {
   param(
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]

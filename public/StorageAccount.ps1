@@ -11,7 +11,7 @@ function New-StorageAccount {
 
     EnsureResourceGroupExists -Name $ResourceGroupName
 
-    $createCommandString = CreateAzCommand `
+    $createCommandString = NewAzCommand `
         -Resource 'storage account' `
         -Verb 'create' `
         -Options @{
@@ -23,7 +23,7 @@ function New-StorageAccount {
 
     $createResult = InvokeAzCommand -Command $createCommandString
 
-    $showConnectionStringCommandString = CreateAzCommand `
+    $showConnectionStringCommandString = NewAzCommand `
         -Resource 'storage account' `
         -Verb 'show-connection-string' `
         -Options @{

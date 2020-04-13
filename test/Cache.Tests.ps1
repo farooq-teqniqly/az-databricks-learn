@@ -1,14 +1,14 @@
 . "$PSScriptRoot\..\private\Cache.ps1"
 
-Describe 'UpdateCache tests' {
+Describe 'SetCacheItem tests' {
     It 'Adds and updates item' {
-        $item = UpdateCache `
+        $item = SetCacheItem `
             -Key 'foo' `
             -Item @{'value' = 'bar'}
 
         $item['value'] | Should -Be 'bar'
 
-        $updatedItem =  UpdateCache `
+        $updatedItem =  SetCacheItem `
         -Key 'foo' `
         -Item @{'value' = 'boo'}
 
@@ -16,13 +16,13 @@ Describe 'UpdateCache tests' {
     }
 }
 
-Describe 'GetCachedItem tests' {
+Describe 'GetCacheItem tests' {
     It 'Gets the item' {
-        UpdateCache `
+        SetCacheItem `
             -Key 'foo' `
             -Item @{'value' = 'bar'}
 
-        $cachedItem = GetCachedItem -Key 'foo'
+        $cachedItem = GetCacheItem -Key 'foo'
 
         $cachedItem['value'] | Should -Be 'bar'
     }

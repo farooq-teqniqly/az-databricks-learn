@@ -30,7 +30,7 @@ function New-DatabricksWorkspace {
         -DeploymentParameters $deploymentParametersJson
 
     try {
-        $command = CreateAzCommand `
+        $command = NewAzCommand `
             -Resource 'group deployment' `
             -Verb 'create' `
             -Options @{

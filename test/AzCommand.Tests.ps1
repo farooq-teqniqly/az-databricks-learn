@@ -7,7 +7,7 @@ Describe 'CreateCommand' {
             location = 'westus2';
         }
 
-        $commandString = CreateAzCommand `
+        $commandString = NewAzCommand `
             -Resource 'group' `
             -Verb 'show' `
             -Options $options
@@ -23,7 +23,7 @@ Describe 'CreateCommand' {
 
         $query = '[name, id]'
 
-        $commandString = CreateAzCommand `
+        $commandString = NewAzCommand `
             -Resource 'group' `
             -Verb 'create' `
             -Options $options `

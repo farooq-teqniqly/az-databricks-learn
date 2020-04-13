@@ -65,6 +65,8 @@ function Remove-ResourceGroup {
 }
 
 function Get-ResourceGroup {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

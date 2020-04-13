@@ -20,3 +20,22 @@ Describe 'New-DatabricksWorkspace' {
             -ResourceGroupName 'rg'
     }
 }
+
+Describe 'Get-DatabricksWorkspace' {
+    It 'Gets the workspace' {
+        Mock Invoke-Expression `
+            -MockWith { @(
+                'id', 'name', 'loc', 'mid'
+            )} `
+            -Verifiable
+
+        $result = Get-DatabricksWorkspace `
+                -WorkspaceName 'foo' `
+                -ResourceGroupName 'rg'
+
+        $result['id'] | Should -Be 'id'
+        $result['name'] | Should -Be 'name'
+        $result['url'] | Should -Be 'https://loc.azuredatabricks.net'
+        $result['managedResourceGroupId'] | Should -Be 'mid'
+    }
+}

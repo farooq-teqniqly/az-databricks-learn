@@ -1,4 +1,6 @@
 function New-DataLakeStorageAccount {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

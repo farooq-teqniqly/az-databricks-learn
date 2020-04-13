@@ -27,3 +27,31 @@ Describe 'GetCacheItem tests' {
         $cachedItem['value'] | Should -Be 'bar'
     }
 }
+
+Describe 'ClearCache tests' {
+    It 'Clears the cache' {
+        SetCacheItem `
+            -Key 'foo' `
+            -Item @{'value' = 'bar'}
+
+        ClearCache
+
+        GetKeys | Should -Be $null
+    }
+}
+
+Describe 'GetKeys tests' {
+    It 'Gets the keys' {
+        ClearCache
+
+        SetCacheItem `
+            -Key 'foo' `
+            -Item @{'value' = 'bar'}
+
+        SetCacheItem `
+            -Key 'baz' `
+            -Item @{'value' = 'qux'}
+
+        (GetKeys).Count | Should -Be 2
+    }
+}

@@ -2,6 +2,7 @@ function New-DatabricksWorkspace {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $WorkspaceName,
 
         [Parameter()]
@@ -9,6 +10,7 @@ function New-DatabricksWorkspace {
         [string] $PricingTier = "standard",
 
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $ResourceGroupName
     )
 
@@ -22,13 +24,11 @@ function New-DatabricksWorkspace {
         workspaceName = @{ value = $WorkspaceName }
     } | ConvertTo-Json
 
-    $deploymentParametersFileName = Join-Path `
-        -Path $PSScriptRoot `
-        -ChildPath ((New-Guid).ToString() + ".json")
+    $deploymentParametersFileName = GetRandomFileName
 
-    WriteDeploymentParametersToFile `
+    WriteFile `
         -Path $deploymentParametersFileName `
-        -DeploymentParameters $deploymentParametersJson
+        -Content $deploymentParametersJson
 
     try {
         $command = NewAzCommand `
@@ -52,9 +52,11 @@ function Get-DatabricksWorkspace {
     [OutputType([hashtable])]
     param(
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $WorkspaceName,
 
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $ResourceGroupName
     )
 
@@ -66,7 +68,7 @@ function Get-DatabricksWorkspace {
             'name'           = $WorkspaceName;
             'resource-type'  = 'Microsoft.Databricks/workspaces';
         } `
-        -Query = '[id, name, location, properties.managedResourceGroupId]'
+        -Query '[id, name, location, properties.managedResourceGroupId]'
 
     $result = InvokeAzCommand -Command $command
 
@@ -78,11 +80,61 @@ function Get-DatabricksWorkspace {
     }
 }
 
-function WriteDeploymentParametersToFile {
+function New-DatabricksCluster {
+    [CmdletBinding()]
     param(
-        [string]$Path,
-        [string]$DeploymentParameters
+      [Parameter(Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$ClusterName
     )
 
-    [System.IO.File]::WriteAllText($Path, $DeploymentParameters)
+    $clusterParametersFileName = GetRandomFileName
+
+    $createClusterJson = @{
+        num_workers = $null
+        autoscale = @{
+            min_workers = 2
+            max_workers = 4
+        }
+        cluster_name = $ClusterName
+        spark_version = "6.4.x-scala2.11"
+        spark_conf = @{}
+        node_type_id = "Standard_DS3_v2"
+        ssh_public_keys = @()
+        custom_tags = @{}
+        spark_env_vars = @{
+            PYSPARK_PYTHON = "/databricks/python3/bin/python3"
+        }
+        autotermination_minutes = 60
+        init_scripts = @()
+    } | ConvertTo-Json
+
+    WriteFile `
+        -Path $clusterParametersFileName `
+        -Content $createClusterJson
+
+    try {
+        InvokeAzCommand -Command "databricks clusters create --json-file $clusterParametersFileName"
+    } finally {
+        Remove-Item -Path $clusterParametersFileName -Force
+    }
+}
+
+function WriteFile {
+    param(
+        [string]$Path,
+        [string]$Content
+    )
+
+    [System.IO.File]::WriteAllText($Path, $Content)
+}
+
+function GetRandomFileName {
+    param(
+        [string]$Extension = ".json"
+    )
+
+    return Join-Path `
+        -Path $PSScriptRoot `
+        -ChildPath ((New-Guid).ToString() + $Extension)
 }

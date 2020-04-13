@@ -5,13 +5,14 @@
 
 Describe 'New-DatabricksWorkspace' {
     It 'Creates the workspace' {
-        Mock EnsureResourceGroupExists
+        Mock EnsureResourceGroupExists -Verifiable
+        Mock GetRandomFileName -MockWith {'foo'} -Verifiable
 
         Mock Get-ResourceGroup `
             -MockWith {@{'location' = 'westus2'}} `
             -Verifiable
 
-        Mock WriteDeploymentParametersToFile -Verifiable
+        Mock WriteFile -Verifiable
         Mock Invoke-Expression -Verifiable
         Mock Remove-Item -Verifiable
 
@@ -37,5 +38,16 @@ Describe 'Get-DatabricksWorkspace' {
         $result['name'] | Should -Be 'name'
         $result['url'] | Should -Be 'https://loc.azuredatabricks.net'
         $result['managedResourceGroupId'] | Should -Be 'mid'
+    }
+}
+
+Describe 'New-DatabricksCluster' {
+    It 'Creates the cluster' {
+        Mock GetRandomFileName -MockWith {'foo'} -Verifiable
+        Mock WriteFile -Verifiable
+        Mock Invoke-Expression -Verifiable
+        Mock Remove-Item -Verifiable
+
+        New-DatabricksCluster -ClusterName 'cluster'
     }
 }

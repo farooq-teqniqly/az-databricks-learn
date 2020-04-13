@@ -1,5 +1,17 @@
 [hashtable]$script:cache = @{}
 
+function ClearCache {
+    param()
+
+    [hashtable]$script:cache = @{}
+}
+
+function GetKeys {
+    param()
+
+    return $script:cache.Keys
+}
+
 function SetCacheItem {
     param(
         [Parameter(Mandatory = $true)]

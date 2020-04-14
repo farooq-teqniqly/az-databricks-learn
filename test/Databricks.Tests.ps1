@@ -40,14 +40,3 @@ Describe 'Get-DatabricksWorkspace' {
         $result['managedResourceGroupId'] | Should -Be 'mid'
     }
 }
-
-Describe 'New-DatabricksCluster' {
-    It 'Creates the cluster' {
-        Mock GetRandomFileName -MockWith {'foo'} -Verifiable
-        Mock WriteFile -Verifiable
-        Mock Invoke-Expression -Verifiable
-        Mock Remove-Item -Verifiable
-
-        New-DatabricksCluster -ClusterName 'cluster'
-    }
-}

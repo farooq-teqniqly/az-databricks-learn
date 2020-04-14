@@ -1,4 +1,22 @@
+
 function New-DatabricksWorkspace {
+    <#
+        .SYNOPSIS
+        Creates a new Azure Databricks workspace.
+
+        .DESCRIPTION
+        Creates a new Azure Databricks workspace in the resource group specified in the -ResourceGroupName parameter.
+        This function fails if the resource group does not exist.
+
+        .PARAMETER WorkspaceName
+        The Databricks workspace name.
+
+        .PARAMETER PricingTier
+        The Databricks pricing tier. Acceptable values are 'standard' and 'premium'. Defaults to 'standard'.
+
+        .PARAMETER ResourceGroupName
+        The resource group to create the workspace in.
+    #>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -48,6 +66,27 @@ function New-DatabricksWorkspace {
 }
 
 function Get-DatabricksWorkspace {
+    <#
+        .SYNOPSIS
+        Queries for an Azure Databricks workspace.
+
+        .DESCRIPTION
+        Queries for an Azure Databricks workspace with the name specified in the -WorkspaceName parameter.
+
+        .PARAMETER WorkspaceName
+        The Databricks workspace name.
+
+        .PARAMETER ResourceGroupName
+        The resource group containing the workspace.
+
+        .OUTPUTS
+        A [hashtable] containing the following:
+
+        1. Resource id for the workspace (id).
+        2. Workspace name (name).
+        3. Databricks URL (url).
+        4. The managed resource group's id (managedResourceGroupId).
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
@@ -77,46 +116,6 @@ function Get-DatabricksWorkspace {
         name = $result[1];
         url = ("https://{0}.azuredatabricks.net" -f $result[2]);
         managedResourceGroupId = $result[3];
-    }
-}
-
-function New-DatabricksCluster {
-    [CmdletBinding()]
-    param(
-      [Parameter(Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$ClusterName
-    )
-
-    $clusterParametersFileName = GetRandomFileName
-
-    $createClusterJson = @{
-        num_workers = $null
-        autoscale = @{
-            min_workers = 2
-            max_workers = 4
-        }
-        cluster_name = $ClusterName
-        spark_version = "6.4.x-scala2.11"
-        spark_conf = @{}
-        node_type_id = "Standard_DS3_v2"
-        ssh_public_keys = @()
-        custom_tags = @{}
-        spark_env_vars = @{
-            PYSPARK_PYTHON = "/databricks/python3/bin/python3"
-        }
-        autotermination_minutes = 60
-        init_scripts = @()
-    } | ConvertTo-Json
-
-    WriteFile `
-        -Path $clusterParametersFileName `
-        -Content $createClusterJson
-
-    try {
-        InvokeAzCommand -Command "databricks clusters create --json-file $clusterParametersFileName"
-    } finally {
-        Remove-Item -Path $clusterParametersFileName -Force
     }
 }
 

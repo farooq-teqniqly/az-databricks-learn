@@ -1,4 +1,24 @@
 function New-ResourceGroup {
+    <#
+        .SYNOPSIS
+        Creates a new Azure resource group.
+
+        .DESCRIPTION
+        Creates a new Azure resource group.
+
+        .PARAMETER Name
+        The resource group name.
+
+        .PARAMETER Location
+        The resource group location.
+
+        .OUTPUTS
+        A [hashtable] containing the following:
+
+        1. Resource group resource id (id).
+        2. Resource group name (name).
+        3. Resource group location (location).
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param (
@@ -37,6 +57,16 @@ function New-ResourceGroup {
 }
 
 function Remove-ResourceGroup {
+    <#
+        .SYNOPSIS
+        Removes an Azure resource group.
+
+        .DESCRIPTION
+        Removes an Azure resource group.
+
+        .PARAMETER Name
+        The resource group name.
+    #>
     [CmdletBinding(
         SupportsShouldProcess=$true,
         ConfirmImpact='High')]
@@ -65,6 +95,25 @@ function Remove-ResourceGroup {
 }
 
 function Get-ResourceGroup {
+    <#
+        .SYNOPSIS
+        Queries for an Azure resource group.
+
+        .DESCRIPTION
+        Queries for an Azure resource group.
+
+        .PARAMETER Name
+        The resource group name.
+
+        .OUTPUTS
+        A [hashtable] containing the following:
+
+        1. Resource group resource id (id).
+        2. Resource group name (name).
+        3. Resource group location (location).
+
+        If the resource group does exist, returns $null.
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(

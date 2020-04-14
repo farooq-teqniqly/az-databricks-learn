@@ -10,16 +10,17 @@ Describe 'Module Manifest Tests' {
     It 'Exports the expected functions' {
         $exports = (Test-ModuleManifest -Path $ModuleManifestPath).ExportedFunctions
 
-        $exports.Keys.Count | Should -Be 8
+        $exports.Keys.Count | Should -Be 9
 
         $exports['New-DatabricksWorkspace'] | Should -Not -Be $null
         $exports['Get-DatabricksWorkspace'] | Should -Not -Be $null
-        $exports['New-DatabricksCluster'] | Should -Not -Be $null
         $exports['New-DataLakeStorageAccount'] | Should -Not -Be $null
         $exports['New-ResourceGroup'] | Should -Not -Be $null
         $exports['Remove-ResourceGroup'] | Should -Not -Be $null
         $exports['Get-ResourceGroup'] | Should -Not -Be $null
         $exports['New-StorageAccount'] | Should -Not -Be $null
+        $exports['New-StorageContainer'] | Should -Not -Be $null
+        $exports['Get-StorageAccount'] | Should -Not -Be $null
     }
 }
 

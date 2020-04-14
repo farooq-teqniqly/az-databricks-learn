@@ -72,12 +72,13 @@ Copyright = '(c) 2020 Farooq. All rights reserved.'
 FunctionsToExport = @(
     'New-DatabricksWorkspace',
     'Get-DatabricksWorkspace',
-    'New-DatabricksCluster',
     'New-DataLakeStorageAccount',
     'New-ResourceGroup',
     'Remove-ResourceGroup',
     'Get-ResourceGroup',
-    'New-StorageAccount'
+    'New-StorageAccount',
+    'New-StorageContainer',
+    'Get-StorageAccount'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
